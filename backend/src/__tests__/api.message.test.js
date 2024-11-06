@@ -1,0 +1,56 @@
+const app = require('../app')
+const request = require('supertest')
+
+test('Test if user can list messages if he is not in the group', async () => {
+  let response = await request(app)
+    .post('/login')
+    .send({ email: 'Sebastien.Viardot@grenoble-inp.fr', password: '123456' })
+  expect(response.statusCode).toBe(200)
+  expect(response.body).toHaveProperty('token')
+  response = await request(app)
+    .get('/api/messages/1')
+    .set('x-access-token', response.body.token)
+  expect(response.statusCode).toBe(403)
+  expect(response.body.message).toBe('You must be in the group')
+})
+
+test('Test if user can list messages if he is in the group', async () => {
+  let response = await request(app)
+    .post('/login')
+    .send({ email: 'test@hamza.fr', password: '123456' })
+  expect(response.statusCode).toBe(200)
+  expect(response.body).toHaveProperty('token')
+  response = await request(app)
+    .get('/api/messages/1')
+    .set('x-access-token', response.body.token)
+  expect(response.statusCode).toBe(200)
+  expect(response.body.message).toBe('messages')
+})
+
+test('Test if user can send a message without content', async () => {
+  let response = await request(app)
+    .post('/login')
+    .send({ email: 'test@hamza.fr', password: '123456' })
+  expect(response.statusCode).toBe(200)
+  expect(response.body).toHaveProperty('token')
+  response = await request(app)
+    .post('/api/messages/1')
+    .set('x-access-token', response.body.token)
+    .send({}) // Empty request body
+  expect(response.statusCode).toBe(400)
+  expect(response.body.message).toBe('You must specify the content of the message')
+})
+
+test('Test if user can send a message with content', async () => {
+  let response = await request(app)
+    .post('/login')
+    .send({ email: 'test@hamza.fr', password: '123456' })
+  expect(response.statusCode).toBe(200)
+  expect(response.body).toHaveProperty('token')
+  response = await request(app)
+    .post('/api/messages/1')
+    .set('x-access-token', response.body.token)
+    .send({ content: 'Hello !' }) // Specify the content of the message
+  expect(response.statusCode).toBe(200)
+  expect(response.body.message).toBe('Message posted')
+})

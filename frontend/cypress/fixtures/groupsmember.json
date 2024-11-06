@@ -1,0 +1,11 @@
+{
+    "status": true,
+    "message": "Returning groups",
+    "data": [
+        {
+            "id": 1,
+            "name": "groupe",
+            "ownerId": 1
+        }
+    ]
+}

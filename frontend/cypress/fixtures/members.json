@@ -1,0 +1,16 @@
+{
+    "status": true,
+    "message": "Returning members",
+    "data": [
+        {
+            "id": 1,
+            "name": "test Hamza",
+            "email": "test@hamza.fr"
+        },
+        {
+            "id": 2,
+            "name": "Sebastien Viardot",
+            "email": "Sebastien.Viardot@grenoble-inp.fr"
+        }
+    ]
+}
